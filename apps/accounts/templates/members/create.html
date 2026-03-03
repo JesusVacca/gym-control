@@ -1,0 +1,72 @@
+{% extends 'admin-panel.html' %}
+{% block content %}
+    <nav class="nav">
+        <a
+                class="button"
+                href="{% url 'accounts:members' %}"
+        >
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver atrás</span>
+        </a>
+    </nav>
+
+
+    <form
+            class="form card"
+            method="post"
+            enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form__group form__group--grid">
+
+            <div>
+                <label for="id_first_name" class="form__label">Nombres</label>
+                {{ form.first_name }}
+            </div>
+            <div>
+                <label for="id_last_name" class="form__label">Apellidos</label>
+                {{ form.last_name }}
+            </div>
+
+        </div>
+
+        <div class="form__group form__group--grid">
+
+            <div>
+                <label for="id_weight" class="form__label">Peso</label>
+                {{ form.weight }}
+            </div>
+            <div>
+                <label for="id_height" class="form__label">Altura</label>
+                {{ form.height }}
+            </div>
+
+        </div>
+
+        <div class="form__group">
+            <label for="id_email" class="form__label">Correo electrónico</label>
+            {{ form.email }}
+        </div>
+        <div class="form__group">
+            <label for="id_phone_number" class="form__label">Número de teléfono</label>
+            {{ form.phone_number }}
+        </div>
+
+        <div class="form__group">
+            <label for="id_role" class="form__label">Tipo de usuario</label>
+            {{ form.role }}
+        </div>
+
+        <div class="form__group">
+            <label for="id_photo" class="form__label">Foto del usuario</label>
+            {{ form.photo }}
+        </div>
+
+        <div class="form__group">
+            <button type="submit" class="button button--success">
+                <span>Crear usuario</span>
+            </button>
+        </div>
+    </form>
+
+{% endblock content %}

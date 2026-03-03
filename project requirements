@@ -1,0 +1,50 @@
+🔹 1. Gestión de Usuarios
+RF-01. El sistema deberá permitir registrar nuevos clientes con sus datos personales (nombre, cédula, teléfono, correo).
+RF-02. El sistema deberá permitir editar la información de los clientes registrados.
+RF-03. El sistema deberá permitir activar o desactivar clientes.
+RF-04. El sistema deberá permitir registrar empleados del sistema.
+RF-05. El sistema deberá permitir definir roles (Administrador, Recepcionista).
+RF-06. El sistema deberá restringir funcionalidades según el rol asignado.
+
+🔹 2. Gestión de Planes de Membresía
+RF-07. El sistema deberá permitir crear planes de membresía (diario, semanal, quincenal, mensual, 5 meses).
+RF-08. El sistema deberá permitir modificar el valor y duración de los planes.
+RF-09. El sistema deberá permitir asignar un plan a un cliente.
+RF-10. El sistema deberá calcular automáticamente la fecha de vencimiento de la membresía.
+RF-11. El sistema deberá permitir congelar una membresía (si el gimnasio lo autoriza).
+
+🔹 3. Gestión de Pagos
+RF-12. El sistema deberá permitir registrar pagos de membresía manualmente.
+RF-13. El sistema deberá almacenar el historial de pagos por cliente.
+RF-14. El sistema deberá generar comprobante interno de pago.
+RF-15. El sistema deberá permitir consultar ingresos por rango de fechas.
+🔹 4. Control de Acceso (Entrada y Salida)
+RF-16. El sistema deberá validar si la membresía del cliente está activa antes de permitir el ingreso.
+RF-17. El sistema deberá bloquear automáticamente el ingreso de clientes con membresía vencida.
+RF-18. El sistema deberá registrar la hora de entrada del cliente.
+RF-19. El sistema deberá registrar la hora de salida del cliente.
+RF-20. El sistema deberá cerrar automáticamente la sesión diaria del cliente si no registra salida.
+
+🔹 5. Gestión de Clientes Morosos
+RF-21. El sistema deberá identificar clientes con pagos vencidos.
+RF-22. El sistema deberá generar listado de clientes morosos.
+RF-23. El sistema deberá impedir el acceso a clientes morosos.
+
+🔹 6. Gestión de Inventario
+RF-24. El sistema deberá permitir registrar equipos del gimnasio.
+RF-25. El sistema deberá permitir actualizar el estado del equipo (disponible, en mantenimiento, fuera de servicio).
+RF-26. El sistema deberá permitir consultar el inventario disponible.
+
+🔹 7. Notificaciones
+RF-27. El sistema deberá generar alertas cuando una membresía esté próxima a vencer.
+RF-28. El sistema deberá mostrar notificaciones internas en el panel del administrador.
+
+🔹 8. Reportes
+RF-29. El sistema deberá generar reportes diarios de asistencia.
+RF-30. El sistema deberá generar reportes mensuales de ingresos.
+RF-31. El sistema deberá generar reporte de clientes activos.
+RF-32. El sistema deberá generar reporte de clientes inactivos.
+
+🔹 9. Configuración del Sistema
+RF-33. El sistema deberá funcionar de forma local (instalado en un equipo del gimnasio).
+RF-34. El sistema deberá permitir realizar copias de seguridad de la base de datos.

@@ -1,0 +1,62 @@
+{% extends 'admin-panel.html' %}
+{% block content %}
+
+
+    <nav class="nav">
+
+        <a
+                class="button"
+                href="{% url 'accounts:member-create' %}"
+        >
+            <span>Nuevo usuario</span>
+            <i class="bi bi-plus"></i>
+        </a>
+
+    </nav>
+
+    <div class="table--scroll">
+        <div class="table">
+            <div class="table__head">
+                <div class="table__row">
+                    <div class="table__cell">#</div>
+                    <div class="table__cell">Nombres</div>
+                    <div class="table__cell">Apellidos</div>
+                    <div class="table__cell">Número de teléfono</div>
+                    <div class="table__cell">Correo electrónico</div>
+                    <div class="table__cell">Estado</div>
+                    <div class="table__cell">Acciones</div>
+                </div>
+            </div>
+            <div class="table__body">
+
+                {% for member in members %}
+                    <div class="table__row">
+                        <div class="table__cell">{{ forloop.counter }}</div>
+                        <div class="table__cell">{{ member.first_name }}</div>
+                        <div class="table__cell">{{ member.last_name }}</div>
+                        <div class="table__cell">{{ member.phone_number }}</div>
+                        <div class="table__cell">{{ member.email }}</div>
+                        <div class="table__cell"></div>
+                        <div class="table__cell">
+                            <a
+                                    class="button button--info"
+                                    href="#"
+                                    title="Vista rapida"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a
+                                    class="button"
+                                    href="#"
+                                    title="Editar usuario"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
