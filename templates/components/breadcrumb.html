@@ -1,0 +1,10 @@
+<nav class="breadcrumb">
+    {% for name, url in breadcrumbs %}
+        {% if url %}
+            <a href="{{ url }}" class="breadcrumb__link">{{ name }}</a>
+            <span class="breadcrumb__separator">></span>
+        {% else %}
+            <span class="breadcrumb__link breadcrumb__link--active">{{ name }}</span>
+        {% endif %}
+    {% endfor %}
+</nav>

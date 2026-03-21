@@ -1,72 +1,98 @@
 {% extends 'admin-panel.html' %}
 {% block content %}
-    <nav class="nav">
-        <a
-                class="button"
-                href="{% url 'accounts:members' %}"
+    <header class="heading">
+        <div class="heading__content">
+            <div>
+                <h2 class="title">{{ title }}</h2>
+                <p class="subtitle">{{ subtitle }}</p>
+            </div>
+        </div>
+    </header>
+
+     <a
+         class="button button--main"
+         href="{{ back_url }}"
         >
             <i class="bi bi-arrow-left"></i>
             <span>Volver atrás</span>
         </a>
-    </nav>
-
 
     <form
-            class="form card"
-            method="post"
-            enctype="multipart/form-data">
+            method="POST"
+            enctype="multipart/form-data"
+            style="margin-top: 2rem;"
+            class="card form"
+    >
         {% csrf_token %}
-
+        <h4 class="card__value">Datos basicos</h4>
         <div class="form__group form__group--grid">
-
-            <div>
-                <label for="id_first_name" class="form__label">Nombres</label>
+            <div class="form__group">
+                <label class="form__label" for="id_first_name" data-required="True">Nombre</label>
                 {{ form.first_name }}
             </div>
-            <div>
-                <label for="id_last_name" class="form__label">Apellidos</label>
+            <div class="form__group">
+                <label class="form__label" for="id_last_name">Apellido</label>
                 {{ form.last_name }}
             </div>
-
         </div>
-
         <div class="form__group form__group--grid">
-
-            <div>
-                <label for="id_weight" class="form__label">Peso</label>
-                {{ form.weight }}
+            <div class="form__group">
+                <label class="form__label" for="id_email" data-required="True">Correo electrónico</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <p class="form__error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
             </div>
-            <div>
-                <label for="id_height" class="form__label">Altura</label>
-                {{ form.height }}
+            <div class="form__group">
+                <label class="form__label" for="id_phone_number" data-required="True">Número de teléfono</label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                    {% for error in form.phone_number.errors %}
+                        <p class="form__error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
             </div>
-
         </div>
-
-        <div class="form__group">
-            <label for="id_email" class="form__label">Correo electrónico</label>
-            {{ form.email }}
+        <div class="form__group form__group--grid">
+            <div class="form__group">
+                <label class="form__label" for="id_document_type" data-required="True">Tipo de documento</label>
+                {{ form.document_type }}
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="id_document_number" data-required="True">Número de documento</label>
+                {{ form.document_number }}
+                {% if form.document_number.errors %}
+                    {% for error in form.document_number.errors %}
+                        <p class="form__error">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
         <div class="form__group">
-            <label for="id_phone_number" class="form__label">Número de teléfono</label>
-            {{ form.phone_number }}
-        </div>
-
-        <div class="form__group">
-            <label for="id_role" class="form__label">Tipo de usuario</label>
+            <label class="form__label" for="id_birthday" data-required="True">Tipo de usuario</label>
             {{ form.role }}
         </div>
-
         <div class="form__group">
-            <label for="id_photo" class="form__label">Foto del usuario</label>
-            {{ form.photo }}
+            <label class="form__label" for="id_birthday">Fecha de nacimiento</label>
+            {{ form.birthday }}
         </div>
-
+        <div class="form__group">
+            <label class="form__label" for="id_photo">Seleciona una imagen</label>
+            <input
+                    type="file"
+                    name="photo"
+                    id="id_photo"
+                    accept="image/*"
+                    class="form__input"
+            >
+        </div>
         <div class="form__group">
             <button type="submit" class="button button--success">
-                <span>Crear usuario</span>
+                <i class="bi bi-save"></i>
+                <span>Guardar</span>
             </button>
         </div>
     </form>
-
 {% endblock content %}

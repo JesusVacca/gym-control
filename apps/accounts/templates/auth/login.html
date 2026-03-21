@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div class="core__container">
+    <form
+            style="margin-top: 4vw;"
+            class="form"
+            method="POST" action="{% url 'accounts:login' %}">
+        {% csrf_token %}
+
+        <header class="heading">
+            <h2 class="title title--center">Bienvenido(a)<span>✋</span></h2>
+        </header>
+        <div class="form__group">
+            <label data-required="True" class="form__label" for="id_username">Nombre de usuario</label>
+            <input
+                    class="form__input"
+                    type="email"
+                    name="username"
+                    id="id_username"
+                    placeholder="tu.correo@example.com"
+                    required
+            >
+        </div>
+        <div class="form__group">
+            <label data-required="True" class="form__label" for="id_password">Contraseña</label>
+            <input
+                    class="form__input"
+                    type="password"
+                    name="password"
+                    id="id_password"
+                    placeholder="Tu contraseña"
+                    required
+            >
+        </div>
+        <div class="form__group">
+            <button type="submit" class="button button--success">
+                <span>Inicia sesión</span>
+            </button>
+        </div>
+
+    </form>
+
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+{% block title %}Historial de caja{% endblock %}
+{% block content %}
+<header class="heading">
+    <div class="heading__content">
+        <h2 class="title">Historial de caja</h2>
+        <p class="subtitle">Consulta las aperturas de caja registrados en el sistema.</p>
+    </div>
+    <a class="button button--main" href="{% url 'sales:cash-opening-create' %}">
+        <i class="bi bi-plus"></i>
+        <span>Registrar caja</span>
+    </a>
+</header>
+
+{% if cash_openings %}
+    <div class="card table__scroll">
+        <div class="table">
+            <div class="table__head">
+                <div class="table__row">
+                    <div class="table__cell table__cell--sm">#</div>
+                    <div class="table__cell">Registrado por</div>
+                    <div class="table__cell table__cell--md">Monto</div>
+                    <div class="table__cell table__cell--md">Ingreso del día</div>
+                    <div class="table__cell table__cell--md">Estado</div>
+                    <div class="table__cell">Fecha</div>
+                    <div class="table__cell table__cell--md">Acciones</div>
+                </div>
+            </div>
+            <div class="table__body">
+                {% for cash_opening in cash_openings %}
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                        <div class="table__cell">{{ cash_opening.team.full_name }}</div>
+                        <div class="table__cell table__cell--md">{{ cash_opening.amount|format_price }}</div>
+                        <div class="table__cell table__cell--md">{{ cash_opening.total_day|format_price }}</div>
+
+                        <div class="table__cell table__cell--md">
+                            {% with is_open=cash_opening.is_open %}
+                            <p class="badge badge--{% if is_open %}success{% else %}danger{% endif %}">{% if is_open %}Abierta{% else %}Cerrada{% endif %}</p>
+                            {% endwith %}
+                        </div>
+
+                        <div class="table__cell"><p class="badge">{{ cash_opening.created_at }}</p></div>
+
+                        <div class="table__cell table__cell--md">
+                            <a class="button" title="Editar caja" href="{% url 'sales:cash-opening-update' pk=cash_opening.pk %}">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    {% include 'components/empty_state.html' with message='No hay cajas registradas' %}
+{% endif %}
+{% endblock content %}

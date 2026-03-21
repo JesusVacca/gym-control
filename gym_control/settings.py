@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-n8kf!$z3!(po619e-i1dw*32k^c$^xzgx%!ga^6^g7kfw)oi)t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.1.10',
+    '192.168.1.73',
+    '127.0.0.1',
+    'localhost',
+]
 
 
 # Application definition
@@ -37,17 +42,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.core',
+    'apps.notifications',
     'apps.accounts',
+    'apps.memberships',
+    'apps.attendances',
+    'apps.payments',
+    'apps.management',
+    'apps.sales',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.accounts.middleware.SessionExpiryMiddleware'
 ]
 
 ROOT_URLCONF = 'gym_control.urls'
@@ -62,6 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.management.context_processors.management_processor'
             ],
         },
     },
@@ -103,13 +118,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'es-co'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
-
 USE_TZ = True
+USE_L10N = False
+
+
+
 
 
 # Static files (CSS, JavaScript, Images)
@@ -117,8 +135,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'productionfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'accounts.Member'
+
+SESSION_COOKIE_AGE = 12 * 60 * 60
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False

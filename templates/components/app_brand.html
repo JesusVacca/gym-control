@@ -1,0 +1,15 @@
+{% load static %}
+<div class="brand">
+    {% if app_settings.app_logo %}
+    <img
+        class="brand__img"
+        src="{{ app_settings.app_logo.url }}"
+        alt="Logotype"/>
+    {% endif %}
+<div class="brand__content">
+    <h1 class="brand__name">{{ app_settings.app_name }}</h1>
+    {% if show_description %}
+    <p class="brand__description">{{ app_settings.app_description }}</p>
+    {% endif %}
+</div>
+</div>

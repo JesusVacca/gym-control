@@ -1,0 +1,68 @@
+{% extends 'admin-panel.html' %}
+{% block title %}Asistencias{% endblock %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Gestión de asistencias</h2>
+            <p class="subtitle">En esta sección encontraras las entradas de los clientes.</p>
+        </div>
+    </header>
+
+    <form method="GET" class="card">
+        <div class="form__group form__group--grid">
+            <div class="form__group">
+                <label class="form__label" for="id_search">Buscar por cliente</label>
+                <input class="form__input" type="text" id="id_search" name="search" placeholder="Buscar por cliente" value="{{ search }}">
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="id_start_date">Fecha inicial</label>
+                <input class="form__input" type="date" id="id_start_date" name="start_date" value="{{ start_date }}">
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="id_end_date">Fecha final</label>
+                <input class="form__input" type="date" id="id_end_date" name="end_date" value="{{ end_date }}">
+            </div>
+
+        </div>
+        <nav class="nav">
+            <button class="button" type="submit">
+                <i class="bi bi-filter"></i>
+                <span>Filtrar</span>
+            </button>
+            <a
+                class="button button--secondary"
+                href="{% url 'attendances:attendances' %}"
+            >
+                <i class="bi bi-x"></i>
+                <span>Limpiar</span>
+            </a>
+        </nav>
+
+    </form>
+    {% if attendances %}
+        <div class="table__scroll card">
+            <div class="table" aria-label="Listado de entradas y salidas">
+                <div class="table__head">
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">#</div>
+                        <div class="table__cell">Cliente</div>
+                        <div class="table__cell">Entrada</div>
+                    </div>
+                </div>
+                <div class="table__body">
+                    {% for attendance in attendances %}
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                            <div class="table__cell">{{ attendance.client.full_name }}</div>
+                            <div class="table__cell">
+                                <p class="badge">{{ attendance.check_in }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html' with message='Aún no hay asistencias registradas' %}
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,27 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const djangoMessages = [
+        {% for message in messages %}
+            {
+                text: '{{ message|escapejs }}',
+                title: '{{ message.tags|escapejs|title }}',
+                icon: '{{ message.tags }}',
+            },
+        {% endfor %}
+    ]
+
+    function showAlerts(messages, index = 0){
+        if(index >= messages.length) return;
+        Swal.fire({
+            icon: messages[index].icon,
+            title: messages[index].title,
+            text: messages[index].text,
+            timer:4000
+        }).then(() => {
+            showAlerts(messages, index + 1);
+        });
+    }
+
+    showAlerts(djangoMessages);
+
+</script>

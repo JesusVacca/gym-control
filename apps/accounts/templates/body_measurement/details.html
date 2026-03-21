@@ -1,0 +1,72 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+{% block title %}{{ client }}{% endblock title %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Historial de medidas <span>{{ client.full_name }}</span></h2>
+        </div>
+    </header>
+    <a
+        class="button button--main"
+        href="{% url 'accounts:body-measurement' %}"
+    >
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver atrás</span>
+    </a>
+    <div class="gallery">
+    {% if change_rate %}
+        <div class="card card--info">
+            <div class="card__title">
+                <i class="bi bi-person-badge"></i>
+                <span>Tasa de cambio</span>
+            </div>
+            <p class="card__value">{{ change_rate }}%</p>
+        </div>
+    {% endif %}
+    </div>
+
+    {% if measurements.all %}
+        <div class="card table__scroll">
+            <div class="table" aria-label="Tabla de medidas">
+                <div class="table__head">
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">#</div>
+                        <div class="table__cell table__cell--md">Fecha</div>
+                        <div class="table__cell table__cell--md">Peso</div>
+                        <div class="table__cell table__cell--md">Bíceps</div>
+                        <div class="table__cell table__cell--md">Pecho</div>
+                        <div class="table__cell table__cell--md">Abdomen Alto</div>
+                        <div class="table__cell table__cell--md">Abdomen Medio</div>
+                        <div class="table__cell table__cell--md">Abdomen Bajo</div>
+                        <div class="table__cell table__cell--md">Glúteo</div>
+                        <div class="table__cell table__cell--md">Pierna</div>
+                        <div class="table__cell table__cell--md">Aductor</div>
+                        <div class="table__cell table__cell--md">Pantorrilla</div>
+                    </div>
+                </div>
+                <div class="table__body">
+                    {% for body in measurements.all %}
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                            <div class="table__cell table__cell--md"><p class="badge">{{ body.created_at|default:'' }}</p></div>
+                            <div class="table__cell table__cell--md">{{ body.weight|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.biceps|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.chest|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.high_abdomen|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.mid_abdomen|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.lower_abdomen|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.tail|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.leg|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.adductor|format_measures }}</div>
+                            <div class="table__cell table__cell--md">{{ body.calf|format_measures }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html' with message='No hay medidas registradas' %}
+    {% endif %}
+
+{% endblock content %}

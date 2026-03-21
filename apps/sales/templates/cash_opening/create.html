@@ -1,0 +1,47 @@
+{% extends 'admin-panel.html' %}
+{% block title %} Registrar historial de caja {% endblock %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Apertura de caja</h2>
+            <p class="subtitle">Registra el monto inicial para iniciar la caja del día.</p>
+        </div>
+    </header>
+
+    <a class="button button--main" href="{% url 'sales:cash-opening' %}">
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver atrás</span>
+    </a>
+
+    <form method="POST" class="card form">
+        {% csrf_token %}
+        <h4 class="card__value">Datos básicos.</h4>
+        <div class="form__group">
+            <label class="form__label" for="id_amount" data-required="True">Monto base</label>
+            {{ form.amount }}
+            {% if form.amount.errors %}
+                {% for error in form.amount.errors %}
+                    <p class="form__error">{{ error|escape }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form__group">
+            <div class="form__switch">
+                <label class="switch__wrapper" for="id_is_open">
+                    <span class="form__label">Abierto</span>
+                    {{ form.is_open }}
+                    <span class="switch">
+                        <span class="switch__button"></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form__group">
+            <button class="button button--success" type="submit">
+                <i class="bi bi-save"></i>
+                <span>Realizar acción</span>
+            </button>
+        </div>
+    </form>
+{% endblock %}

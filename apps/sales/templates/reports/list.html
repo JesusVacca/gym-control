@@ -1,0 +1,81 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+{% block title %}Reportes de ingresos{% endblock %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Reportes de ingresos</h2>
+            <p class="subtitle">Consulta el historial de ingresos agrupados por día, aplica filtros personalizados y genera reportes en PDF.</p>
+        </div>
+        <a class="button button--main" href="{% url 'sales:reports-pdf' %}?{{ request.GET.urlencode }}">
+            <i class="bi bi-file-earmark-pdf"></i>
+            <span>Exportar PDF</span>
+        </a>
+    </header>
+    <form method="GET" class="card">
+        <div class="form__group form__group--grid">
+            <div class="form__group">
+                <label class="form__label" for="start_date">Fecha inicial</label>
+                <input class="form__input" type="date" id="start_date" name="start_date" value="{{ start_date }}">
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="end_date">Fecha fin</label>
+                <input class="form__input" type="date" id="end_date" name="end_date" value="{{ end_date }}">
+            </div>
+        </div>
+        <div class="form__group form__group--grid">
+            <div class="form__group">
+                <label class="form__label" for="id_type">Tipo de ingreso</label>
+                <select class="form__input" id="id_type" name="selected_type">
+                    <option value="" selected>Seleccione...</option>
+                    {% for type in type_list %}
+                        <option value="{{ type.0 }}" {% if selected_type == type.0 %}selected{% endif %}>{{ type.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="id_payment_method">Métodos de pagos</label>
+                <select class="form__input" id="id_payment_method" name="selected_payment_method">
+                    <option value="" selected>Seleccione...</option>
+                    {% for payment_method in payment_methods %}
+                        <option value="{{ payment_method.0 }}" {% if selected_payment_method == payment_method.0 %}selected{% endif %}>{{ payment_method.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <nav class="nav">
+            <button class="button" type="submit">
+                <i class="bi bi-filter"></i>
+                <span>Filtrar</span>
+            </button>
+            <a class="button button--secondary" href="{% url 'sales:reports' %}">
+                <i class="bi bi-x"></i>
+                <span>Limpiar</span>
+            </a>
+        </nav>
+    </form>
+    {% if daily_incomes %}
+    <div class="table__scroll card">
+        <div class="table" aria-label="Table de todos los ingresos">
+            <div class="table__head">
+                <div class="table__row">
+                    <div class="table__cell table__cell--sm">#</div>
+                    <div class="table__cell">Fecha</div>
+                    <div class="table__cell">Ventas totales</div>
+                    <div class="table__cell">Total ingreso</div>
+                </div>
+            </div>
+            <div class="table__body">
+                {% for income in daily_incomes %}
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                        <div class="table__cell">{{ income.day }}</div>
+                        <div class="table__cell">{{ income.count }}</div>
+                        <div class="table__cell">{{ income.total|format_price }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock content %}

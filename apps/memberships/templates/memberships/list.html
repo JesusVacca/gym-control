@@ -1,0 +1,86 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Listado de membresías</h2>
+            <p class="subtitle">En esta sección puedes gestionar las membresías de los clientes.</p>
+        </div>
+        <a
+                class="button button--main"
+                href="{% url 'memberships:membership-create' %}"
+        >
+            <span>Nueva membresía</span>
+            <i class="bi bi-plus"></i>
+        </a>
+    </header>
+    {% if memberships %}
+        <div class="table__scroll card">
+            <div class="table" aria-label="tabla de membresías">
+                <div class="table__head">
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">#</div>
+                        <div class="table__cell">Plan</div>
+                        <div class="table__cell">Usuario</div>
+                        <div class="table__cell">Estado de membresía</div>
+                        <div class="table__cell table__cell--md">Valor membresía</div>
+                        <div class="table__cell table__cell--md">Debe</div>
+                        <div class="table__cell table__cell--md">Pagado</div>
+                        <div class="table__cell">Fecha inicio</div>
+                        <div class="table__cell">Fecha fin</div>
+                        <div class="table__cell table__cell--md">Acciones</div>
+                    </div>
+                </div>
+                <div class="table__body">
+                    {% for membership in memberships %}
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                            <div class="table__cell"><p class="badge badge--{% if membership.plan.duration_days > 0 %}warning{% else %}success{% endif %}">{{ membership.plan.name }}</p></div>
+                            <div class="table__cell">{{ membership.member.full_name }}</div>
+                            <div class="table__cell">
+                                <p class="badge badge--{{ membership.status|slugify|lower }}">{{ membership.status }}</p>
+                            </div>
+                            <div class="table__cell table__cell--md">{{ membership.price|format_price }}</div>
+                            <div class="table__cell table__cell--md">{{ membership.debt|format_price }}</div>
+                            <div class="table__cell table__cell--md">
+                                <p class="badge badge--{% if membership.is_paid %}success{% else %}danger{% endif %}">
+                                    {% if membership.is_paid %}
+                                    Si
+                                    {% else %}
+                                    No
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="table__cell">
+                                <p class="badge">{{ membership.start_date }}</p>
+                            </div>
+                            <div class="table__cell">
+                                <p class="badge">{{ membership.end_date }}</p>
+                            </div>
+                            <div class="table__cell table__cell--md">
+                                <a
+                                    class="button"
+                                    href="{% url 'memberships:membership-update' pk=membership.pk %}"
+                                >
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                {% if not membership.is_paid %}
+                                    <a
+                                        class="button button--success"
+                                        title="Realizar pago"
+                                        href="{% url 'payments:payment-create' %}?q={{ membership.id }}"
+                                    >
+                                        <i class="bi bi-credit-card"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html' with message='No hay membresías registradas.' %}
+    {% endif %}
+
+{% endblock content %}

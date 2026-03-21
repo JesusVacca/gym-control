@@ -1,0 +1,20 @@
+{% extends 'admin-panel.html' %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Configuraciones del sistema</h2>
+            <p class="subtitle">En está sección puedes modificar la informacíon básica del sistema.</p>
+        </div>
+    </header>
+    <form method="POST" class="form card" enctype="multipart/form-data">
+        <h4 class="card__value">Datos de la aplicación</h4>
+        {% csrf_token %}
+        {% include 'components/render_form.html' %}
+        <div class="form__group">
+            <button type="submit" class="button button--success">
+                <i class="bi bi-save"></i>
+                <span>Realizar cambios</span>
+            </button>
+        </div>
+    </form>
+{% endblock content %}

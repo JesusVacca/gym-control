@@ -1,0 +1,54 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+
+{% load static %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Listado de planes</h2>
+            <p class="subtitle">En esta sección puedes gestionar los planes disponibles.</p>
+        </div>
+        <a
+                class="button button--main"
+                href="{% url 'memberships:plan-create' %}"
+        >
+            <span>Nuevo plan</span>
+            <i class="bi bi-plus"></i>
+        </a>
+    </header>
+
+    {% if planes %}
+        <div class="gallery">
+        {% for plan in planes %}
+            <div class="gallery__item card">
+                <img
+                        src="{% static 'images/plan.png' %}"
+                        alt="{{ plan.name|slugify|lower }}"
+                        class="gallery__img">
+                <div class="card__title">{{ plan.name }}</div>
+                <div class="card__value">Precio: {{ plan.price|format_price }}</div>
+                <div class="card__value">{{ plan.description }}</div>
+                <div class="card__title">Estado: <p class="badge badge--success">{{ plan.status }}</p></div>
+                <div>
+                    <a
+                            class="button"
+                            href="{% url 'memberships:plan-update' plan.pk %}"
+                    >
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <button
+                            class="button button--danger button--delete"
+                            data-url="{% url 'memberships:plan-delete' pk=plan.pk %}"
+                            type="button"
+                    >
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html' with message='Aún no hay planes registrados.' %}
+    {% endif %}
+
+{% endblock content %}

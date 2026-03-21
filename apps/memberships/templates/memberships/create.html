@@ -1,0 +1,59 @@
+{% extends 'admin-panel.html' %}
+{% block content %}
+
+     <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Crear membresía</h2>
+            <p class="subtitle">Para crear una membresía, por favor ingresar los datos requeridos.</p>
+        </div>
+    </header>
+    <a
+            class="button"
+            href="{% url 'memberships:memberships' %}"
+    >
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver atrás</span>
+    </a>
+
+    <form class="form card" method="POST">
+        <h4 class="card__value">Datos de membresía</h4>
+        {% csrf_token %}
+        {% include 'components/render_form.html' %}
+
+
+        <div class="form__group">
+            <button type="submit" class="button button--success">
+                <i class="bi bi-save"></i>
+                <span>Realizar acción</span>
+            </button>
+        </div>
+    </form>
+
+{% endblock content %}
+
+{% block javascript %}
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('client_search');
+        const hiddenInput = document.getElementById('id_member');
+        const options = document.querySelectorAll('#clients option');
+
+        if (!searchInput || !hiddenInput) return;
+
+        searchInput.addEventListener('change', () => {
+            const value = searchInput.value;
+            let found = false;
+            options.forEach(option => {
+                if (option.value === value) {
+                    hiddenInput.value = option.dataset.id;
+                    found = true;
+                }
+            });
+
+            if (!found) {
+                hiddenInput.value = '';
+            }
+        });
+    });
+</script>
+{% endblock javascript%}

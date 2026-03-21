@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+{% block title %}Registro de asistencia{% endblock %}
+{% block content %}
+    <div class="core__container">
+
+        <form method="post" class="form">
+
+            <header class="heading">
+                <h2 class="title title--center">Registrar <span>Asistencia</span></h2>
+            </header>
+
+            {% csrf_token %}
+            <div class="form__group">
+                <label
+                        data-required="True"
+                        class="form__label"
+                        for="id_query">
+                    Ingrese su número de teléfono
+                </label>
+                {{ form.query }}
+            </div>
+            <div class="form__group">
+                <button class="button button--success" type="submit">
+                    <span>Realizar acción</span>
+                </button>
+            </div>
+        </form>
+
+
+    </div>
+{% endblock content %}

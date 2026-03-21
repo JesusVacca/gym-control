@@ -1,0 +1,39 @@
+{% extends 'admin-panel.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">{{ title }}</h2>
+            <p class="subtitle">{{ subtitle }}</p>
+        </div>
+    </header>
+    <a class="button button--main" href="{{ back_url }}">
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver atrás</span>
+    </a>
+    <form method="POST" class="card form">
+        {% csrf_token %}
+        <h4 class="card__value">Medidas del cliente</h4>
+        <div class="form__group form__group--grid">
+            {% for field in form %}
+                <div class="form__group">
+                    <label
+                            class="form__label"
+                            for="{{ field.id_for_label }}"
+                            {% if field.field.required %}
+                            data-required="True"
+                            {% endif %}
+                    >
+                        {{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="form__group">
+            <button type="submit" class="button button--success">
+                <i class="bi bi-save"></i>
+                <span>Guardar</span>
+            </button>
+        </div>
+    </form>
+{% endblock %}

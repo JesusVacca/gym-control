@@ -1,0 +1,21 @@
+<div class="form__group">
+<input
+    type="hidden"
+    name="{{ widget.name }}"
+    id="id_{{ widget.name }}"
+    value="{{ widget.value|default:'' }}"
+>
+<input
+    type="text"
+    id="{{ widget.attrs.id }}_search"
+    list="{{ widget.attrs.id }}_list"
+    placeholder="Buscar..."
+    value="{{ selected|default:'' }}"
+    autocomplete="off"
+>
+<datalist id="{{ widget.attrs.id }}_list">
+    {% for obj in queryset %}
+        <option data-id="{{ obj.id }}" value="{{ obj }}">
+    {% endfor %}
+</datalist>
+</div>

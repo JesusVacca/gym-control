@@ -1,0 +1,136 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+    <nav class="breadcrumb">
+        <a class="breadcrumb__link" href="{% url 'core:index' %}">Inicio</a>
+        <span class="breadcrumb__separator"> > </span>
+        <span class="breadcrumb__link breadcrumb__link--active">Dashboard</span>
+    </nav>
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Dashboard</h2>
+        </div>
+        {% if not cash_opening %}
+        <a
+            class="button button--main"
+            href="{% url 'sales:cash-opening-create' %}"
+        >
+            <span>Abrir caja</span>
+            <i class="bi bi-cash-stack"></i>
+        </a>
+        {% endif %}
+    </header>
+
+    <div class="gallery">
+        <div class="card card--featured">
+            <h2 class="card__title">
+                <i class="bi bi-graph-up-arrow"></i>
+                Ingreso mensual
+            </h2>
+            <p class="card__value">{{ income_month|format_price }}</p>
+        </div>
+        <div class="card card--brand">
+            <h2 class="card__title">
+                <i class="bi bi-graph-up-arrow"></i>
+                Total del día
+            </h2>
+            <p class="card__value">{{ income_today|format_price }}</p>
+        </div>
+        <div class="card card--{% if percentage_variation >= 0 or percentage_variation == None %}success{% else %}danger{% endif %}">
+            <h2 class="card__title">
+                <i class="bi {% if percentage_variation >= 0 or percentage_variation == None %}bi-graph-up-arrow{% else %}bi-graph-down-arrow{% endif %}"></i>
+                Variación de ventas
+            </h2>
+            <p class="card__value">
+                {% if percentage_variation is None %}
+                    Nuevo ingreso
+                {% else %}
+                    {{ percentage_variation|floatformat:1 }}%
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <div class="gallery gallery--col4">
+        <div class="card card--success">
+            <h2 class="card__title">
+                <i class="bi bi-check-circle"></i>
+                Clientes activos
+            </h2>
+            <p class="card__value">{{ active_clients }}</p>
+        </div>
+
+        <div class="card card--info">
+            <h2 class="card__title">
+                <i class="bi bi-people"></i>
+                Clientes nuevos del día
+            </h2>
+            <p class="card__value">{{ new_clients_today }}</p>
+        </div>
+        <div class="card card--{% if attendances_today < 5 %}danger{% else %}info{% endif %}">
+            <h2 class="card__title">
+                <i class="bi bi-list-check"></i>
+                Asistencias hoy
+            </h2>
+            <p class="card__value">{{ attendances_today }}</p>
+        </div>
+    </div>
+    <div class="gallery gallery--col2">
+        {% if last_memberships %}
+        <div class="table__scroll card card--info">
+            <h4 class="card__title">
+                <i class="bi bi-person-square"></i>
+                Últimas membresías
+            </h4>
+            <div class="table">
+                <div class="table__head">
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">#</div>
+                        <div class="table__cell table__cell--md">Plan</div>
+                        <div class="table__cell">Cliente</div>
+                    </div>
+                </div>
+                <div class="table__body">
+                    {% for membership in last_memberships %}
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                            <div class="table__cell table__cell--md">{{ membership.plan.name }}</div>
+                            <div class="table__cell">{{ membership.member.full_name }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+            {% include 'components/empty_state.html' with message='No hay membresías recientes' %}
+        {% endif %}
+        {% if clients_with_debts %}
+            <div class="table__scroll card card--danger">
+                <h4 class="card__title">
+                    <i class="bi bi-cash"></i>
+                    Clientes con deudas
+                </h4>
+                <div class="table">
+                    <div class="table__head">
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">#</div>
+                            <div class="table__cell">Cliente</div>
+                            <div class="table__cell table__cell--md">Debe</div>
+                        </div>
+                    </div>
+                    <div class="table__body">
+                        {% for membership in clients_with_debts %}
+                            <div class="table__row">
+                                <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                                <div class="table__cell">{{ membership.member.full_name }}</div>
+                                <div class="table__cell table__cell--md">{{ membership.debt|format_price }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {% include 'components/empty_state.html' with message='No hay clientes con deudas' %}
+        {% endif %}
+    </div>
+{% endblock content %}

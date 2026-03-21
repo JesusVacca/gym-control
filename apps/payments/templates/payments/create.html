@@ -1,0 +1,24 @@
+{% extends 'admin-panel.html' %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Registrar pago.</h2>
+        </div>
+    </header>
+    <a class="button button--main" href="{% url 'payments:payments' %}">
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver</span>
+    </a>
+
+    <form method="POST" class="form card">
+        {% csrf_token %}
+        {% include 'components/render_form.html' %}
+        <div class="form__group">
+            <button class="button button--success" type="submit">
+                <i class="bi bi-check-circle"></i>
+                <span>Realizar acción</span>
+            </button>
+        </div>
+    </form>
+
+{% endblock content %}

@@ -1,62 +1,179 @@
 {% extends 'admin-panel.html' %}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
+    <div class="modal">
+        <div class="card modal__container">
+            <header class="heading">
+                <h2 class="title title--center">Detalles del usuario</h2>
+            </header>
+            <div class="modal__content" id="modalContent">
 
+            </div>
+            <nav class="nav nav--jus--end">
+                <button
+                        id="closeModal"
+                        type="button"
+                        class="button button--secondary">
+                    <i class="bi bi-x"></i>
+                    <span>Cerrar</span>
+                </button>
+                <button type="button" class="button">
+                    <span>Ver más detalles</span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </nav>
 
-    <nav class="nav">
+        </div>
+    </div>
 
+    <header class="heading">
+        <div class="heading__content">
+           <h2 class="title">{{ title }}</h2>
+            <p class="subtitle">{{ subtitle }}</p>
+        </div>
         <a
-                class="button"
-                href="{% url 'accounts:member-create' %}"
+                class="button button--main"
+                href="{{ create_url }}"
         >
             <span>Nuevo usuario</span>
             <i class="bi bi-plus"></i>
         </a>
+    </header>
 
-    </nav>
-
-    <div class="table--scroll">
+    {% if list %}
+    <div class="card table__scroll">
         <div class="table">
             <div class="table__head">
                 <div class="table__row">
-                    <div class="table__cell">#</div>
-                    <div class="table__cell">Nombres</div>
-                    <div class="table__cell">Apellidos</div>
+                    <div class="table__cell table__cell--sm">#</div>
+                    <div class="table__cell">Nombre completo</div>
+                    <div class="table__cell table__cell--md">Tipo de cliente</div>
                     <div class="table__cell">Número de teléfono</div>
-                    <div class="table__cell">Correo electrónico</div>
-                    <div class="table__cell">Estado</div>
+                    <div class="table__cell table__cell--md">Estado</div>
                     <div class="table__cell">Acciones</div>
                 </div>
             </div>
             <div class="table__body">
-
-                {% for member in members %}
+                {% for member in list %}
                     <div class="table__row">
-                        <div class="table__cell">{{ forloop.counter }}</div>
-                        <div class="table__cell">{{ member.first_name }}</div>
-                        <div class="table__cell">{{ member.last_name }}</div>
-                        <div class="table__cell">{{ member.phone_number }}</div>
-                        <div class="table__cell">{{ member.email }}</div>
-                        <div class="table__cell"></div>
+                        <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                        <div class="table__cell">{{ member.full_name }}</div>
+                        <div class="table__cell table__cell--md"><p class="badge"> <i class="bi bi-person"></i> {{ member.role }}</p></div>
+                        <div class="table__cell"><p class="badge"> <i class="bi bi-phone"></i>{{ member.phone_number }}</p></div>
+                        <div class="table__cell table__cell--md">
+                            <div>
+                                <form
+                                        method="POST"
+                                        action="{% url toggle_url pk=member.pk %}"
+                                        onclick="this.submit()"
+                                >
+                                    {% csrf_token %}
+                                    <div class="switch__wrapper">
+                                        <div class="switch">
+                                            <span class="switch__button {% if member.is_active %}switch__button--active{% endif %}"></span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                         <div class="table__cell">
                             <a
-                                    class="button button--info"
-                                    href="#"
-                                    title="Vista rapida"
-                            >
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <a
                                     class="button"
-                                    href="#"
+                                    href="{% url update_url member.pk %}"
                                     title="Editar usuario"
                             >
                                 <i class="bi bi-pencil-square"></i>
                             </a>
+                            <button
+                                    type="button"
+                                    class="button button--danger button--delete"
+                                    data-url="{% url delete_url member.pk %}"
+                                    title="Eliminar usuario"
+                            >
+                                <i class="bi bi-trash"></i>
+                            </button>
+                            <button
+                                    type="button"
+                                    class="button button--success"
+                                    title="Vista rapida"
+                                    data-open-modal="detail-member"
+
+                                    data-first-name="{{ member.first_name }}"
+                                    data-last-name="{{ member.last_name }}"
+                                    data-photo="{% if member.photo %}{{ member.photo.url }}{% endif %}"
+                                    data-email="{{ member.email }}"
+                                    data-phone="{{ member.phone_number }}"
+
+                            >
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-
+    {% else %}
+            {% include 'components/empty_state.html' with message='Aún no hay usuarios registrados.' %}
+    {% endif %}
 {% endblock content %}
+
+{% block javascript %}
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const buttonsOpenModal = document.querySelectorAll('button.button[data-open-modal="detail-member"]');
+            const modalContent = document.querySelector('#modalContent');
+            const modal = document.querySelector('.modal');
+            const buttonCloseModal = document.querySelector('#closeModal');
+
+            buttonCloseModal.addEventListener('click', () => modal.classList.remove('modal--open'))
+
+            buttonsOpenModal.forEach(button=>{
+                button.addEventListener('click', () => {
+                    modal.classList.add('modal--open');
+
+                    const firstName = button.getAttribute('data-first-name');
+                    const lastName = button.getAttribute('data-last-name');
+                    const photo = button.getAttribute('data-photo');
+                    const email = button.getAttribute('data-email');
+                    const phone = button.getAttribute('data-phone');
+
+
+                    modalContent.innerHTML = `
+                        <div class="form__group">
+                            <img
+                                    class="form__img"
+                                    src="${photo}"
+                                    alt="Avatar - ${firstName} ${lastName}"
+                            >
+                        </div>
+
+                        <div class="form__group form__group--grid">
+                            <div>
+                                <p class="form__label">Nombres</p>
+                                <p class="form__input">${firstName}</p>
+                            </div>
+                            <div>
+                                <p class="form__label">Nombres</p>
+                                <p class="form__input">${lastName}</p>
+                            </div>
+                        </div>
+                        <div class="form__group form__group--grid">
+                            <div>
+                                <p class="form__label">Correo electrónico</p>
+                                <p class="form__input">${email}</p>
+                            </div>
+                            <div>
+                                <p class="form__label">Número de teléfono</p>
+                                <p class="form__input">${phone}</p>
+                            </div>
+                        </div>
+
+
+                    `;
+                })
+            })
+
+        })
+    </script>
+{% endblock javascript %}

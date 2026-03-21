@@ -1,0 +1,88 @@
+{% extends 'admin-panel.html' %}
+{% block title %}Pagos{% endblock %}
+{% load format_tags %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Listado de pagos</h2>
+            <p class="subtitle">En esta sección encontrarás los pagos por clientes.</p>
+        </div>
+        <a class="button button--main" href="{% url 'payments:payment-create' %}">
+            <span>Nuevo pago</span>
+            <i class="bi bi-plus"></i>
+        </a>
+    </header>
+    <form method="GET" class="card">
+        <div class="form__group form__group--grid">
+            <div class="form__group">
+                <label class="form__label" for="id_search">Buscar por cliente</label>
+                <input class="form__input" type="text" id="id_search" name="search" placeholder="Buscar por cliente" value="{{ search }}">
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="id_payment_type">Tipo de pago</label>
+                <select class="form__input" name="payment_type" id="id_payment_type">
+                    <option  value="" selected>Seleccione un tipo</option>
+                    {% for type in payment_type %}
+                        <option value="{{ type.0 }}" {% if selected_payment_type == type.0 %}selected{% endif %}>{{ type.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <nav class="nav">
+            <button class="button" type="submit">
+                <i class="bi bi-filter"></i>
+                <span>Filtrar</span>
+            </button>
+            <a
+                class="button button--secondary"
+                href="{% url 'payments:payments' %}"
+            >
+                <i class="bi bi-x"></i>
+                <span>Limpiar</span>
+            </a>
+        </nav>
+
+    </form>
+    {% if payments %}
+        <div class="card table__scroll">
+            <div class="table">
+                <div class="table__head">
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">#</div>
+                        <div class="table__cell table__cell--md">Cliente</div>
+                        <div class="table__cell table__cell--md">Total pagado</div>
+                        <div class="table__cell table__cell--md">Debe</div>
+                        <div class="table__cell table__cell--md">Modo de pago</div>
+                        <div class="table__cell">Fecha de pago</div>
+                        <div class="table__cell table__cell--md">Acciones</div>
+                    </div>
+                </div>
+                <div class="table__body">
+                    {% for payment in payments %}
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                            <div class="table__cell table__cell--md"><p class="badge">{{ payment.payment_owner }}</p></div>
+                            <div class="table__cell table__cell--md">{{ payment.amount|format_price }}</div>
+                            <div class="table__cell table__cell--md">{{ payment.debt|format_price }}</div>
+                            <div class="table__cell table__cell--md">
+                                <p class="badge badge--{{ payment.payment_method|upper|slugify }}">{{ payment.payment_method }}</p>
+                            </div>
+                            <div class="table__cell">{{ payment.payment_date }}</div>
+                            <div class="table__cell table__cell--md">
+                                <a
+                                    class="button"
+                                    href="{% url 'payments:payment-update' pk=payment.pk %}"
+                                    title="Editar pago"
+                                >
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html' with message='Aún no hay pagos registrador.' %}
+    {% endif %}
+{% endblock content %}

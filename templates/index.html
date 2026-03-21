@@ -1,12 +1,49 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="es">
+{% include 'components/app_head.html' %}
 <body>
     <div id="root" class="root">
+        <div
 
+            class="core__section"
+            style="--bg-url-img: url({% if app_settings.app_image  %}{{ app_settings.app_image.url }}{% else %}{% static 'images/fond.avif' %}{% endif %});"
+        >
+            <div class="overlay"></div>
+            <header class="core__header">
+            {% include 'components/app_brand.html' %}
+                <div class="menu" style="flex: initial;">
+                    <a
+                            class="menu__link"
+                            href="{% url 'core:index' %}"
+                    >
+                        <i class="bi bi-check"></i>
+                        <span>Registro de asistencia</span>
+                    </a>
+                    {% if not user.is_authenticated %}
+                        <a
+                                class="menu__link"
+                                href="{% url 'accounts:login' %}"
+                        >
+                            <i class="bi bi-door-open"></i>
+                            <span>Inicio de sesión</span>
+                        </a>
+                    {% else %}
+                        <a
+                                class="menu__link"
+                                href="{% url 'management:dashboard' %}"
+                        >
+                            <i class="bi bi-grid"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </header>
+                {% block content %}
+                {% endblock %}
+        </div>
     </div>
+    {% include 'components/notifications.html' %}
+
 </body>
 </html>

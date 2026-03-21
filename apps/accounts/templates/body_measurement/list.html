@@ -1,0 +1,56 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+{% block title %}Medidas de los clientes{% endblock %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Medidas de los clientes</h2>
+        </div>
+        <a class="button button--main" href="{% url 'accounts:body-measurement-add' %}">
+            <span>Crear medida</span>
+            <i class="bi bi-plus"></i>
+        </a>
+    </header>
+
+    {% if list %}
+        <div class="card table__scroll">
+            <div class="table" aria-label="Tabla de medidas">
+                <div class="table__head">
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">#</div>
+                        <div class="table__cell">Cliente</div>
+                        <div class="table__cell table__cell--md">Peso</div>
+                        <div class="table__cell table__cell--md">Brazos</div>
+                        <div class="table__cell table__cell--md">Pecho</div>
+                        <div class="table__cell table__cell--md">Acciones</div>
+                    </div>
+                </div>
+                <div class="table__body">
+                    {% for body in list %}
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                            <div class="table__cell"><p class="badge">{{ body.client }}</p></div>
+                            <div class="table__cell table__cell--md">{{ body.weight|format_measures }}kg</div>
+                            <div class="table__cell table__cell--md">{{ body.biceps|format_measures }}cm</div>
+                            <div class="table__cell table__cell--md">{{ body.chest|format_measures }}cm</div>
+                            <div class="table__cell table__cell--md">
+                                <a class="button">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a
+                                    class="button button--secondary"
+                                    title="Ver historial de medidas"
+                                    href="{% url 'accounts:body-measurement-details' pk=body.client.pk %}">
+                                    <i class="bi bi-rulers"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html' with message='No hay medidas registradas' %}
+    {% endif %}
+
+{% endblock content %}

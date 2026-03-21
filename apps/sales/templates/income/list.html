@@ -1,0 +1,124 @@
+{% extends 'admin-panel.html' %}
+{% load format_tags %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Ingresos del día</h2>
+        </div>
+        <a class="button button--main" href="{% url 'sales:income-create' %}">
+            <i class="bi bi-plus"></i>
+            Registrar ingreso
+        </a>
+    </header>
+
+    <div class="gallery">
+        <div class="card card--featured">
+            <div class="card__title">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span>Total del día</span>
+            </div>
+            <p class="card__value">{{ total_today|format_price }}</p>
+        </div>
+        <div class="card card--info">
+            <div class="card__title">
+                <i class="bi bi-phone-flip"></i>
+                <span>Transferenciás</span>
+            </div>
+            <p class="card__value">{{ transfer|format_price }}</p>
+        </div>
+        <div class="card card--brand">
+            <div class="card__title">
+                <i class="bi bi-cash-stack"></i>
+                <span>Efectivo</span>
+            </div>
+            <p class="card__value">{{ cash|format_price }}</p>
+        </div>
+    </div>
+    <div class="gallery gallery--col4">
+
+        <div class="card card--brand">
+            <div class="card__title">
+                <i class="bi bi-check-circle"></i>
+                <span>Saldo inicial de caja</span>
+            </div>
+            <p class="card__value">{{ cash_opening|format_price }}</p>
+        </div>
+        <div class="card card--success">
+            <div class="card__title">
+                <i class="bi bi-activity"></i>
+                <span>Ingreso del Gym</span>
+            </div>
+            <p class="card__value">{{ gym_income|format_price }}</p>
+        </div>
+        <div class="card card--info">
+            <div class="card__title">
+                <i class="bi bi-snow"></i>
+                <span>Venta de nevera</span>
+            </div>
+            <p class="card__value">{{ refrigerator_income|format_price }}</p>
+        </div>
+        <div class="card card--warning">
+            <div class="card__title">
+                <i class="bi bi-cup-hot"></i>
+                <span>Venta de café</span>
+            </div>
+            <p class="card__value">{{ coffee_income|format_price }}</p>
+        </div>
+        <div class="card card--success">
+            <div class="card__title">
+                <i class="bi bi-leaf"></i>
+                <span>Venta de Herbalife</span>
+            </div>
+            <p class="card__value">{{ herbalife_income|format_price }}</p>
+        </div>
+        <div class="card card--warning">
+            <div class="card__title">
+                <i class="bi bi-heart-pulse"></i>
+                <span>Venta de Proteína</span>
+            </div>
+            <p class="card__value">{{ protein_income|format_price }}</p>
+        </div>
+    </div>
+
+    {% if incomes %}
+        <div class="card table__scroll">
+            <div class="table">
+                <div class="table__head">
+                    <div class="table__row">
+                        <div class="table__cell table__cell--sm">#</div>
+                        <div class="table__cell table__cell--md">Categoría</div>
+                        <div class="table__cell">Descipción</div>
+                        <div class="table__cell table__cell--md">Cantidad</div>
+                        <div class="table__cell">Método de pago</div>
+                        <div class="table__cell table__cell--md">Acciones</div>
+                    </div>
+                </div>
+                <div class="table__body">
+                    {% for income in incomes %}
+                        <div class="table__row">
+                            <div class="table__cell table__cell--sm">{{ forloop.counter }}</div>
+                            <div class="table__cell table__cell--md">
+                                <p class="badge badge--{{ income.category|slugify|lower }}">{{ income.category }}</p>
+                            </div>
+                            <div class="table__cell">
+                                <p class="badge">{% if income.description %}{{ income.description }}{% else %}N/A{% endif %}</p>
+                            </div>
+                            <div class="table__cell table__cell--md">{{ income.amount|format_price }}</div>
+                            <div class="table__cell">
+                                <p class="badge badge--{{ income.payment_method|lower|slugify }}">{{ income.payment_method }}</p>
+                            </div>
+                            <div class="table__cell table__cell--md">
+                                <a class="button button--info" href="{% url 'sales:income-update' pk=income.pk %}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html' with message='Aún no hay movimientos registrados para hoy.' %}
+    {% endif %}
+
+{% endblock content %}

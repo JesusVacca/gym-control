@@ -1,0 +1,62 @@
+{% extends 'admin-panel.html' %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Crear plan</h2>
+            <p class="subtitle">Para crear un plan, por favor llenar los campos requeridos</p>
+        </div>
+    </header>
+    <a
+            class="button button--main"
+            href="{% url 'memberships:planes' %}"
+    >
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver atrás</span>
+    </a>
+
+    <form
+            class="form card"
+            method="post"
+    >
+        {% if title %}
+
+        {% endif %}
+        {% csrf_token %}
+        <div class="form__group">
+            <label class="form__label" for="id_name" data-required="True">Nombre del plan</label>
+            {{ form.name }}
+        </div>
+
+        <div class="form__group form__group--grid">
+            <div class="form__group">
+                <label class="form__label" for="id_name" data-required="True">Días de duración</label>
+                {{ form.duration_days }}
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="id_price" data-required="True">Precio</label>
+                {{ form.price }}
+            </div>
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="id_description">Descripción</label>
+            {{ form.description }}
+        </div>
+        <div class="form__group">
+            <div class="form__switch">
+                <label class="switch__wrapper" for="id_is_active">
+                    <span class="form__label">Estado</span>
+                    {{ form.is_active }}
+                    <span class="switch">
+                        <span class="switch__button"></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="form__group">
+            <button type="submit" class="button button--success">
+                <span>Crear plan</span>
+            </button>
+        </div>
+    </form>
+
+{% endblock content %}

@@ -1,21 +1,185 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% include 'components/app_head.html' %}
+    <title>{% block title%}Default{% endblock %}</title>
 </head>
 <body>
     <div class="root" id="root">
+        <aside class="navbar">
+            {% include 'components/app_brand.html' with show_description=True %}
+            <nav class="menu">
+                <a class="menu__link" href="{% url 'management:dashboard' %}">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Dashboard</span>
+                </a>
 
+                <div class="menu__dropdown">
+                    <p class="menu__dropdown__header">
+                        <i class="bi bi-people"></i>
+                        <span>Usuarios</span>
+                        <button type="button" class="toggle__dropdown">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </p>
+                    <div class="menu">
+
+                        <a
+                                class="menu__link"
+                                href="{% url 'accounts:clients' %}"
+                        >
+                            <i class="bi bi-people-fill"></i>
+                            <span>Clientes</span>
+                        </a>
+                        {% if user.role == 'Administrador' %}
+                        <a
+                                class="menu__link"
+                                href="{% url 'accounts:teams' %}"
+                        >
+                            <i class="bi bi-person-lock"></i>
+                            <span>Equipo</span>
+                        </a>
+                        {% endif %}
+                        <a
+                                class="menu__link"
+                                href="{% url 'accounts:body-measurement' %}"
+                        >
+                            <i class="bi bi-rulers"></i>
+                            <span>Medidas</span>
+                        </a>
+                    </div>
+
+                </div>
+
+
+                <div class="menu__dropdown">
+                    <p class="menu__dropdown__header">
+                        <i class="bi bi-people"></i>
+                        <span>Membresías</span>
+                        <button type="button" class="toggle__dropdown">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </p>
+                    <div class="menu">
+                        <a
+                            class="menu__link"
+                            href="{% url 'memberships:memberships' %}"
+                        >
+                            <i class="bi  bi-person-badge"></i>
+                            <span>Membresías</span>
+                        </a>
+                        <a
+                            class="menu__link"
+                            href="{% url 'memberships:planes' %}"
+                        >
+                            <i class="bi bi-card-list"></i>
+                            <span>Planes</span>
+                        </a>
+                        <a
+                            class="menu__link"
+                            href="{% url 'payments:payments' %}"
+                        >
+                            <i class="bi bi-credit-card"></i>
+                            <span>Pagos</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="menu__dropdown">
+                    <p class="menu__dropdown__header">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Ventas</span>
+                        <button type="button" class="toggle__dropdown">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </p>
+                    <div class="menu">
+
+                        <a
+                                class="menu__link"
+                                href="{% url 'sales:cash-opening' %}"
+                        >
+                            <i class="bi bi-cash-stack"></i>
+                            <span>Apertura de caja</span>
+                        </a>
+                        <a
+                                class="menu__link"
+                                href="{% url 'sales:incomes' %}"
+                        >
+                            <i class="bi bi-currency-dollar"></i>
+                            <span>Ingresos del día</span>
+                        </a>
+                        <a
+                                class="menu__link"
+                                href="{% url 'sales:reports' %}"
+                        >
+                            <i class="bi bi-bar-chart"></i>
+                            <span>Reportes</span>
+                        </a>
+                    </div>
+
+                </div>
+
+                <a
+                        class="menu__link"
+                        href="{% url 'attendances:attendances' %}"
+                >
+                    <i class="bi bi-card-checklist"></i>
+                    <span>Asistencias</span>
+                </a>
+                {% if user.role == 'Administrador' %}
+                <a
+                    class="menu__link"
+                    href="{% url 'management:app-settings' %}"
+                >
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+                {% endif %}
+            </nav>
+        </aside>
         <main class="container">
+            <header class="header">
+                {% if user.is_authenticated %}
+                <div class="profile">
+                    <img
+                        class="profile__img"
+                        src="{% if user.photo %}{{ user.photo.url }}{% else %}{% static 'images/avatar.png' %}{% endif %}"
+
+                        alt="Avatar"
+                    />
+                    <div class="profile__name">{{ user.first_name }}</div>
+                    <span class="profile__status"></span>
+                    <div class="profile__options">
+                        <a class="profile__option">
+                            <i class="bi bi-person"></i>
+                            <span>Mi perfil</span>
+                        </a>
+                        <p class="separator"></p>
+                        <button
+                                type="button"
+                                class="profile__option profile__option--logout"
+                                id="logout"
+                                data-url="{% url 'accounts:logout' %}"
+                        >
+                            <i class="bi bi-door-open"></i>
+                            <span>Salir</span>
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </header>
             <div class="content">
+                {% include 'components/breadcrumb.html' %}
                 {% block content %}
                 {% endblock content %}
             </div>
         </main>
-
     </div>
+    {% include 'components/notifications.html' %}
+    <script src="{% static 'scripts/adminPanel.js' %}"></script>
+    <script src="{% static 'scripts/moneyInput.js' %}"></script>
+    {% block javascript %}
+    {% endblock javascript %}
 </body>
 </html>
