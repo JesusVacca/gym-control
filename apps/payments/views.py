@@ -85,6 +85,10 @@ class PaymentCreateView(CreateView):
                 cash_opening=cash_opening,
                 source=Income.Source.PAYMENT
             )
+            Notify.notify(
+                request=self.request,
+                message='Pago registrado correctamente',
+            )
         return redirect(self.get_success_url())
 
 @method_decorator(role_required([Member.BaseRoles.ADMINISTRATOR, Member.BaseRoles.SECRETARY]),name='dispatch')

@@ -23,13 +23,17 @@ class DashboardView(TemplateView):
 
         context['cash_opening'] = CashOpening.objects.filter(is_open=True).exists()
 
+        now = timezone.localtime()
+        start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        if now.month == 12:
+            end = now.replace(year=now.year + 1, month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        else:
+            end = now.replace(month=now.month + 1, day=1, hour=0, minute=0, second=0, microsecond=0)
+
         # Ingresos del mes
-        now = timezone.localtime(timezone.now())
-        current_year = now.year
-        current_month = now.month
         context['income_month'] = Income.objects.filter(
-            created_at__year=current_year,
-            created_at__month=current_month
+            created_at__gte=start,
+            created_at__lt=end,
         ).aggregate(total_month=Sum('amount'))['total_month'] or 0
 
         # Ingresos hoy

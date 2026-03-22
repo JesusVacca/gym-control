@@ -1,4 +1,4 @@
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from apps.accounts.models import Member
 from apps.sales.models import Income, CashOpening
-from utils import Notify, role_required
+from utils import Notify, role_required, get_today_range
 
 
 @method_decorator(role_required([Member.BaseRoles.ADMINISTRATOR, Member.BaseRoles.SECRETARY]),name='dispatch')
@@ -16,20 +16,31 @@ class IncomeListView(ListView):
     template_name = 'income/list.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = timezone.localdate()
-        context['gym_income'] = Income.objects.filter(category = Income.IncomeCategory.GYM, created_at__date=today).aggregate(total=Sum('amount'))['total'] or 0
-        context['refrigerator_income'] = Income.objects.filter(category = Income.IncomeCategory.REFRIGERATOR, created_at__date=today).aggregate(total=Sum('amount'))['total'] or 0
-        context['coffee_income'] = Income.objects.filter(category = Income.IncomeCategory.COFFEE, created_at__date=today).aggregate(total=Sum('amount'))['total'] or 0
-        context['herbalife_income'] = Income.objects.filter(category = Income.IncomeCategory.HERBALIFE, created_at__date=today).aggregate(total=Sum('amount'))['total'] or 0
-        context['protein_income'] = Income.objects.filter(category = Income.IncomeCategory.PROTEIN, created_at__date=today).aggregate(total=Sum('amount'))['total'] or 0
-        context['total_today'] = Income.objects.filter(created_at__date=today).aggregate(total=Sum('amount'))['total'] or 0
-        context['transfer'] = Income.objects.filter(created_at__date=today, payment_method=Income.IncomeMethod.TRANSFER).aggregate(total=Sum('amount'))['total'] or 0
-        context['cash'] = Income.objects.filter(created_at__date=today, payment_method=Income.IncomeMethod.CASH).aggregate(total=Sum('amount'))['total'] or 0
-        context['cash_opening'] = CashOpening.objects.filter(created_at__date=today).aggregate(total=Sum('amount'))['total']
+        start_date, end_date = get_today_range()
+        queryset = Income.objects.filter(created_at__range=[start_date, end_date])
+        totals = queryset.aggregate(
+            gym=Sum('amount', filter=Q(category=Income.IncomeCategory.GYM)),
+            refrigerator=Sum('amount', filter=Q(category=Income.IncomeCategory.REFRIGERATOR)),
+            coffee=Sum('amount', filter=Q(category=Income.IncomeCategory.COFFEE)),
+            herbalife=Sum('amount', filter=Q(category=Income.IncomeCategory.HERBALIFE)),
+            protein=Sum('amount', filter=Q(category=Income.IncomeCategory.PROTEIN)),
+            transfer=Sum('amount', filter=Q(payment_method=Income.IncomeMethod.TRANSFER)),
+            cash=Sum('amount', filter=Q(payment_method=Income.IncomeMethod.CASH)),
+            total=Sum('amount')
+        )
+        context['gym_income'] = totals['gym'] or 0
+        context['refrigerator_income'] = totals['refrigerator'] or 0
+        context['coffee_income'] = totals['coffee'] or 0
+        context['herbalife_income'] = totals['herbalife'] or 0
+        context['protein_income'] = totals['protein'] or 0
+        context['transfer'] = totals['transfer'] or 0
+        context['cash'] = totals['cash'] or 0
+        context['total_today'] = totals['total'] or 0
+
         return context
     def get_queryset(self):
-        today = timezone.localdate()
-        return Income.objects.filter(created_at__date=today).order_by('-created_at')
+        start_date, end_date = get_today_range()
+        return Income.objects.filter(created_at__range=[start_date, end_date]).order_by('-created_at')
 
 
 @method_decorator(role_required([Member.BaseRoles.ADMINISTRATOR, Member.BaseRoles.SECRETARY]),name='dispatch')
@@ -48,6 +59,10 @@ class IncomeCreateView(CreateView):
             )
             return super().form_invalid(form)
         form.instance.cash_opening = cash_opening
+        Notify.notify(
+            request=self.request,
+            message='Ingreso registrado correctamente',
+        )
         return super().form_valid(form)
 
 @method_decorator(role_required([Member.BaseRoles.ADMINISTRATOR, Member.BaseRoles.SECRETARY]),name='dispatch')

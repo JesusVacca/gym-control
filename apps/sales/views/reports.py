@@ -1,5 +1,9 @@
-from django.db.models import Sum, Count
-from django.db.models.functions import TruncDate
+from datetime import datetime, time
+
+from django.utils.dateparse import parse_date
+
+from django.db.models import Sum, Count, DateField
+from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.views import View
 from django.views.generic import ListView
@@ -12,7 +16,6 @@ from reportlab.platypus import Paragraph, Spacer, SimpleDocTemplate, Table, Tabl
 from apps.sales.models import Income
 from apps.management.models import AppSettings
 
-app_settings = AppSettings.load()
 
 
 class ReportsListView(ListView):
@@ -21,6 +24,7 @@ class ReportsListView(ListView):
     context_object_name = 'daily_incomes'
 
     def get_paginate_by(self, queryset):
+        app_settings = AppSettings.load()
         return app_settings.elements_per_section if app_settings else 10
 
     def get_context_data(self, **kwargs):
@@ -38,14 +42,15 @@ class ReportsListView(ListView):
 
     def get_base_queryset(self):
         queryset = Income.objects.all()
-
         start_date = self.request.GET.get('start_date')
         end_date = self.request.GET.get('end_date')
         selected_type = self.request.GET.get('selected_type')
         selected_payment_method = self.request.GET.get('selected_payment_method')
 
         if start_date and end_date:
-            queryset = queryset.filter(created_at__date__range=[start_date, end_date])
+            start = datetime.combine(parse_date(start_date), time.min)
+            end = datetime.combine(parse_date(end_date), time.max)
+            queryset = queryset.filter(created_at__range=[start, end])
         if selected_type:
             queryset = queryset.filter(category=selected_type)
         if selected_payment_method:
@@ -57,7 +62,7 @@ class ReportsListView(ListView):
         queryset = self.get_base_queryset()
 
         return queryset.annotate(
-            day=TruncDate('created_at')
+            day=Cast('created_at', output_field=DateField()),
         ).values('day').annotate(
             total=Sum('amount'),
             count=Count('id')

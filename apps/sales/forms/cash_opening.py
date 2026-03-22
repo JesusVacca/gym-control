@@ -1,7 +1,7 @@
 from django import forms
-from django.utils import timezone
-
 from apps.sales.models import CashOpening
+from utils import get_today_range
+
 
 class CashOpeningForm(forms.ModelForm):
     class Meta:
@@ -13,9 +13,9 @@ class CashOpeningForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        today = timezone.localdate()
+        start_date, end_date = get_today_range()
         qs = CashOpening.objects.filter(
-                created_at__date=today,
+                created_at__range=[start_date, end_date],
                 is_open=True
         )
         if self.instance and self.instance.pk:

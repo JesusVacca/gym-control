@@ -27,6 +27,13 @@ class PlanCreateView(CreateView):
         context['subtitle'] = 'Para crear un plan, por favor llenar los campos requeridos.'
         return context
 
+    def form_valid(self, form):
+        Notify.notify(
+            request=self.request,
+            message='Plan creado correctamente',
+        )
+        return super().form_valid(form)
+
 @method_decorator(
     role_required([Member.BaseRoles.ADMINISTRATOR, Member.BaseRoles.SECRETARY]),
     name='dispatch'
@@ -40,6 +47,13 @@ class PlanUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Actualizar plan'
         return context
+
+    def form_valid(self, form):
+        Notify.notify(
+            request=self.request,
+            message='Plan actualizado correctamente',
+        )
+        return super().form_valid(form)
 
 
 class PlanDeleteView(View):
