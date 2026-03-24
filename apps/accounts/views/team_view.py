@@ -1,25 +1,28 @@
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView
 
 from apps.accounts.forms import MemberForm
 from apps.accounts.models import Member
-from .base_view import BaseDeleteViewMixin, BaseToggleViewMixin
+from .base_view import BaseDeleteViewMixin, BaseToggleViewMixin, BaseSearchView
 from utils import role_required
+from apps.management.models import AppSettings
 
 
 @method_decorator(role_required([Member.BaseRoles.ADMINISTRATOR,]), name='dispatch')
-class TeamListView(ListView):
+class TeamListView(BaseSearchView):
     template_name = 'members/list.html'
     context_object_name = 'list'
     model = Member
 
+    def get_paginate_by(self, queryset):
+        app_settings = AppSettings.load()
+        return app_settings.elements_per_section
     def get_queryset(self):
         return Member\
             .objects\
             .filter(role__in=[Member.BaseRoles.ADMINISTRATOR, Member.BaseRoles.SECRETARY])\
             .exclude(pk=self.request.user.pk)
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -27,6 +30,7 @@ class TeamListView(ListView):
         context['update_url'] = 'accounts:team-update'
         context['delete_url'] = 'accounts:team-delete'
         context['toggle_url'] = 'accounts:team-toggle'
+        context['current_url'] = reverse('accounts:teams')
         context['title'] = 'Personal del gimnasio'
         context['subtitle'] = 'En esta sección puedes encontrar la información deñ personal del gimnasio'
         return context

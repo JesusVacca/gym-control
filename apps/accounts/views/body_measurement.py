@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, View
 
 from apps.accounts.forms import BodyMeasurementForm
 from apps.accounts.models import BodyMeasurement, Client
+from apps.management.models import AppSettings
 from utils import role_required
 
 @method_decorator(role_required([Client.BaseRoles.ADMINISTRATOR, Client.BaseRoles.SECRETARY]), name='dispatch')
@@ -13,6 +14,10 @@ class BodyMeasurementListView(ListView):
     model = BodyMeasurement
     context_object_name = 'list'
     template_name = 'body_measurement/list.html'
+
+    def get_paginate_by(self, queryset):
+        app_settings = AppSettings.load()
+        return app_settings.elements_per_section
     def get_queryset(self):
         last_measurement = BodyMeasurement.objects.filter(
             client=OuterRef("client")

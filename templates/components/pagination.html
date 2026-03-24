@@ -1,0 +1,43 @@
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+    {% endif %}
+    {% with current=page_obj.number total=page_obj.paginator.num_pages %}
+        {% if total <= 3 %}
+            {% for num in page_obj.paginator.page_range %}
+                <a href="?page={{ num }}" class="{% if num == current %}active{% endif %}">
+                    {{ num }}
+                </a>
+            {% endfor %}
+        {% else %}
+            {% if current == 1 %}
+                {% for num in "1,2,3"|cut:"," %}
+                    <a href="?page={{ forloop.counter }}" class="{% if forloop.counter == current %}active{% endif %}">
+                        {{ forloop.counter }}
+                    </a>
+                {% endfor %}
+            {% elif current == total %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num >= total|add:"-2" %}
+                        <a href="?page={{ num }}" class="{% if num == current %}active{% endif %}">
+                            {{ num }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num >= current|add:"-1" and num <= current|add:"1" %}
+                        <a href="?page={{ num }}" class="{% if num == current %}active{% endif %}">
+                            {{ num }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+    {% endif %}
+</div>
+{% endif %}

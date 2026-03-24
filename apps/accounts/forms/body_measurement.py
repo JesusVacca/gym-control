@@ -20,5 +20,8 @@ class BodyMeasurementForm(forms.ModelForm):
             'calf':'Medida de pantorrillas (cm)',
         }
         widgets = {
-            'client': DatalistSelect(queryset=Client.objects.all()),
+            'client': DatalistSelect(),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['client'].widget.queryset = Client.objects.all()

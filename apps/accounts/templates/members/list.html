@@ -40,8 +40,33 @@
         </a>
     </header>
 
+    <form method="GET" class="card">
+        <div class="form__group form__group--grid">
+            <div class="form__group">
+                <label class="form__label" for="id_search">Buscar usuairio</label>
+                <input class="form__input" type="text" id="id_search" name="search" placeholder="Buscar nombre o número de teléfono" value="{{ search }}">
+            </div>
+        </div>
+        <nav class="nav">
+            <button class="button" type="submit">
+                <i class="bi bi-filter"></i>
+                <span>Filtrar</span>
+            </button>
+            <a
+                class="button button--secondary"
+                href="{{ current_url }}"
+            >
+                <i class="bi bi-x"></i>
+                <span>Limpiar</span>
+            </a>
+        </nav>
+
+    </form>
+
+
     {% if list %}
     <div class="card table__scroll">
+        {% include 'components/pagination.html' %}
         <div class="table">
             <div class="table__head">
                 <div class="table__row">

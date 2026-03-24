@@ -41,6 +41,7 @@
     </form>
     {% if attendances %}
         <div class="table__scroll card">
+        {% include 'components/pagination.html' %}
             <div class="table" aria-label="Listado de entradas y salidas">
                 <div class="table__head">
                     <div class="table__row">

@@ -25,4 +25,6 @@ urlpatterns = [
     # Auth url
     path('login/', views.MyLoginView.as_view(), name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('me/', views.MyProfileView.as_view(), name='my-profile'),
+    path('me/change-password/<int:pk>/', views.ChangePasswordView.as_view(), name='change-password'),
 ]

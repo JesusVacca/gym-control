@@ -1,5 +1,7 @@
 from django.views.generic import ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
+
+from apps.management.models import AppSettings
 from apps.sales.models import CashOpening
 from apps.sales.forms import CashOpeningForm
 from utils import Notify
@@ -9,6 +11,10 @@ class CashOpeningListView(ListView):
     model = CashOpening
     context_object_name = 'cash_openings'
     template_name = 'cash_opening/list.html'
+
+    def get_paginate_by(self, queryset):
+        app_settings = AppSettings.load()
+        return app_settings.elements_per_section
 
 
 class CashOpeningCreateView(CreateView):

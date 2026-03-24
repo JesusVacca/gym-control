@@ -1,10 +1,10 @@
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 from apps.accounts.models import Member
 from apps.attendances.models import Attendance
-from utils import role_required
+from apps.management.models import AppSettings
+from utils import role_required, get_today_range
 
 
 @method_decorator(
@@ -19,21 +19,26 @@ class AttendanceListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get('search','')
-        context['start_date'] = self.request.GET.get('start_date',None)
-        context['end_date'] = self.request.GET.get('end_date',None)
+        context['start_date'] = self.request.GET.get('start_date')
+        context['end_date'] = self.request.GET.get('end_date')
         return context
 
     def get_queryset(self):
         queryset =  Attendance.objects.select_related('client').all().order_by('-created_at')
         search = self.request.GET.get('search','')
-        start_date = self.request.GET.get('start_date',None)
-        end_date = self.request.GET.get('end_date',None)
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
         if not start_date and not end_date:
-            queryset = queryset.filter(check_in__date=timezone.localdate())
+            start, end = get_today_range()
+            queryset = queryset.filter(check_in__range=[start, end])
         if start_date:
-            queryset = queryset.filter(check_in__date__gte=start_date)
+            queryset = queryset.filter(check_in__gte=start_date)
         if end_date:
-            queryset = queryset.filter(check_in__date__lte=end_date)
+            queryset = queryset.filter(check_in__lte=end_date)
         if search:
             queryset = queryset.filter(client__first_name__icontains=search)
         return queryset
+
+    def get_paginate_by(self, queryset):
+        app_settings = AppSettings.load()
+        return app_settings.elements_per_section

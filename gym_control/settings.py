@@ -154,3 +154,12 @@ AUTH_USER_MODEL = 'accounts.Member'
 
 SESSION_COOKIE_AGE = 12 * 60 * 60
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+
+# Config Backend email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'gimnasiofit8@gmail.com'
+EMAIL_HOST_PASSWORD = 'zxmp dzhp atzk krtm'

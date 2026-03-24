@@ -25,7 +25,7 @@ class ReportsListView(ListView):
 
     def get_paginate_by(self, queryset):
         app_settings = AppSettings.load()
-        return app_settings.elements_per_section if app_settings else 10
+        return app_settings.elements_per_section
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

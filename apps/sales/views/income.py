@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
 
 from apps.accounts.models import Member
+from apps.management.models import AppSettings
 from apps.sales.models import Income, CashOpening
 from utils import Notify, role_required, get_today_range
 
@@ -14,6 +15,11 @@ class IncomeListView(ListView):
     model = Income
     context_object_name = 'incomes'
     template_name = 'income/list.html'
+
+    def get_paginate_by(self, queryset):
+        app_settings = AppSettings.load()
+        return app_settings.elements_per_section
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         start_date, end_date = get_today_range()

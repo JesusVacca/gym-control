@@ -151,9 +151,17 @@
                     <div class="profile__name">{{ user.first_name }}</div>
                     <span class="profile__status"></span>
                     <div class="profile__options">
-                        <a class="profile__option">
+                        <a
+                            href="{% url 'accounts:my-profile' %}"
+                            class="profile__option">
                             <i class="bi bi-person"></i>
                             <span>Mi perfil</span>
+                        </a>
+                        <a
+                            href="{% url 'accounts:change-password' pk=user.pk %}"
+                            class="profile__option">
+                            <i class="bi bi-shield-lock"></i>
+                            <span>Cambiar contraseña</span>
                         </a>
                         <p class="separator"></p>
                         <button

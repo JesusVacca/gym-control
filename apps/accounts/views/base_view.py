@@ -1,6 +1,25 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
-from django.views import View
+from django.views.generic import View, ListView
 from utils import Notify
+
+
+class BaseSearchView(ListView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search','')
+        return context
+
+    def get_queryset(self):
+        queryset = self.model.objects.all().order_by('-created_at')
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(first_name__contains=search) |
+                Q(phone_number__contains=search) |
+                Q(email__contains=search)
+            )
+        return queryset
 
 
 class BaseDeleteViewMixin(View):

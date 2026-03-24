@@ -104,7 +104,7 @@ window.addEventListener('DOMContentLoaded',()=>{
                 }
             })
         }
-        document.querySelectorAll('.toggle__dropdown').forEach(button=>{
+        document.querySelectorAll('.menu__dropdown__header').forEach(button=>{
             button.addEventListener('click',()=>{
                 const dropdown = button.closest('.menu__dropdown');
                 const menu = dropdown.querySelector('.menu');

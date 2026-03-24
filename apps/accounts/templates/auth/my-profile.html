@@ -1,0 +1,72 @@
+{% extends 'admin-panel.html' %}
+{% load static %}
+{% load format_tags %}
+{% block title %}Mi Perfil{% endblock %}
+{% block content %}
+    <header class="heading">
+        <div class="heading__content">
+            <h2 class="title">Mi perfil</h2>
+        </div>
+    </header>
+    <a class="button button--main" href="{% url 'management:dashboard' %}">
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver atrás</span>
+    </a>
+    <div class="my-profile__container">
+        <div class="my-profile__card">
+            <div class="my-profile__header">
+                <div class="avatar-container">
+                    <div class="avatar">
+                        <img src="{% if not user.photo %}{% static 'images/avatar.png' %}{% else %}{{ user.photo.url }}{% endif %}" alt="avatar">
+                    </div>
+                    <div>
+                        <h2>{{ user.full_name }}</h2>
+                        <span class="role-badge">{{ user.role }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="my-profile__body">
+                <!-- Información Personal -->
+                <h2 class="section-title">Información Personal</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nombres</span>
+                        <span class="info-value">{{ user.first_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Apellidos</span>
+                        <span class="info-value">{{ user.last_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Correo Electrónico</span>
+                        <span class="info-value">{{ user.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Teléfono</span>
+                        <span class="info-value">+57 {{ user.phone_number }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Nacimiento</span>
+                        <span class="info-value">{{ user.birthday }}</span>
+                    </div>
+                </div>
+                <!-- Información de Identidad -->
+                <h2 class="section-title">Documentación</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Tipo de Documento</span>
+                        <span class="info-value">{{ user.document_type }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Número de Documento</span>
+                        <span class="info-value">{{ user.document_number }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Miembro desde</span>
+                        <span class="info-value">{{ user.created_at|format_date_only }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock  %}

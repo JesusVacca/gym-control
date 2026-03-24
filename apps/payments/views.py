@@ -2,7 +2,6 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView
 
@@ -21,7 +20,8 @@ class PaymentListView(ListView):
     context_object_name = 'payments'
 
     def get_paginate_by(self, queryset):
-        return AppSettings.load().elements_per_section
+        app_settings = AppSettings.load()
+        return app_settings.elements_per_section
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

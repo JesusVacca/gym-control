@@ -5,7 +5,7 @@ from django.db import models
 
 class Attendance(models.Model):
     client = models.ForeignKey('accounts.Client', on_delete=models.PROTECT, related_name='attendances')
-    check_in = models.DateTimeField(default=timezone.now)
+    check_in = models.DateField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

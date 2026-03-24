@@ -64,7 +64,7 @@ class DashboardView(TemplateView):
                 0,
                 output_field=DecimalField()
             ))\
-            .filter(total_paid__lt=F('price'), status=Membership.Status.ACTIVE).order_by('created_at')[:10]
+            .filter(total_paid__lt=F('price')).order_by('created_at')[:10]
 
 
         if income_yesterday == 0:

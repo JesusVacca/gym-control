@@ -18,15 +18,17 @@ class Membership(models.Model):
         choices=Status,
         default=Status.ACTIVE,
     )
-    start_date = models.DateTimeField(default=timezone.now)
-    end_date = models.DateTimeField()
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField()
     price = models.PositiveIntegerField()
-    frozen_until = models.DateTimeField(blank=True, null=True)
+    notified_expiration = models.BooleanField(default=False)
+    frozen_until = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.plan.name} - {self.member.first_name} - Debe: {str(self.debt)}'
+
 
 
     @property
@@ -43,11 +45,9 @@ class Membership(models.Model):
         return max(self.price - total_paid, 0)
 
     def save(self, *args, **kwargs):
-        if self.price is None:
-            self.price = self.plan.price
-        if not self.end_date:
-            start_date = self.start_date or timezone.now()
-            self.end_date = start_date + timedelta(days=self.plan.duration_days)
+        start_date = self.start_date or timezone.now()
+        self.end_date = start_date + timedelta(days=self.plan.duration_days - 1)
+        self.price = self.plan.price
         super().save(*args, **kwargs)
 
     class Meta:

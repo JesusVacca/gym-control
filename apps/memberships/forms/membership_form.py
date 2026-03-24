@@ -31,12 +31,13 @@ class MembershipForm(forms.ModelForm):
                 format='%Y-%m-%d',
                 attrs={'type': 'date'}
             ),
-            'member': DatalistSelect(queryset=Client.objects.all()),
+            'member': DatalistSelect(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         today = timezone.localdate()
+        self.fields['member'].widget.queryset = Client.objects.all()
         if not self.instance.pk:
             self.fields['start_date'].initial = today
 
