@@ -60,7 +60,6 @@ class ReportsListView(ListView):
 
     def get_filtered_queryset(self):
         queryset = self.get_base_queryset()
-
         return queryset.annotate(
             day=Cast('created_at', output_field=DateField()),
         ).values('day').annotate(

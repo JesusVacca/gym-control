@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from apps.accounts.models import Member
 from apps.management.models import AppSettings
+from apps.sales.forms import IncomeForm
 from apps.sales.models import Income, CashOpening
 from utils import Notify, role_required, get_today_range
 
@@ -43,6 +44,12 @@ class IncomeListView(ListView):
         context['cash'] = totals['cash'] or 0
         context['total_today'] = totals['total'] or 0
 
+        cash_opening_obj = CashOpening.objects.filter(
+            created_at__range=[start_date, end_date],
+            is_open=False
+        ).first()
+        context['cash_opening'] = cash_opening_obj.amount if cash_opening_obj else 0
+
         return context
     def get_queryset(self):
         start_date, end_date = get_today_range()
@@ -54,7 +61,7 @@ class IncomeCreateView(CreateView):
     model = Income
     success_url = reverse_lazy('sales:incomes')
     template_name = 'income/create.html'
-    fields = '__all__'
+    form_class = IncomeForm
     def form_valid(self, form):
         cash_opening = CashOpening.objects.filter(is_open=True).first()
         if not cash_opening:
@@ -75,7 +82,7 @@ class IncomeCreateView(CreateView):
 class IncomeUpdateView(UpdateView):
     model = Income
     success_url = reverse_lazy('sales:incomes')
-    fields = '__all__'
+    form_class = IncomeForm
     template_name = 'income/create.html'
     def form_valid(self, form):
         Notify.notify(

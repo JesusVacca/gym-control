@@ -22,7 +22,7 @@ class Income(models.Model):
     payment_method = models.CharField(max_length=20, choices=IncomeMethod.choices)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    cash_opening = models.ForeignKey('sales.CashOpening', on_delete=models.PROTECT, related_name='income_cash_opening', null=True, blank=True, editable=False)
+    cash_opening = models.ForeignKey('sales.CashOpening', on_delete=models.PROTECT, related_name='income_cash_opening', editable=False)
     source = models.CharField(max_length=10, choices=Source.choices)
     payment = models.OneToOneField('payments.Payment', on_delete=models.PROTECT, related_name='payments', editable=False, blank=True, null=True)
 

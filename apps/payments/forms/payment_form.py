@@ -57,6 +57,11 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = ['membership','amount','payment_method']
+        labels = {
+            'membership':'Selecionar una membresía (Opcional)',
+            'amount':'Valor a pagar',
+            'payment_method':'Método de pago',
+        }
         widgets = {
             'amount': forms.NumberInput(attrs={'placeholder':'Ej 7000','class':'money-input'}),
             'membership': DatalistSelect()
