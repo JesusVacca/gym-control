@@ -7,5 +7,5 @@ class IncomeForm(forms.ModelForm):
         exclude = ('cash_opening',)
         widgets = {
             'amount': forms.NumberInput(attrs={'placeholder': 'Ej: 7000'}),
-            'description': forms.Textarea(attrs={'placeholder': 'Ej: Botella de agua'}),
+            'description': forms.TextInput(attrs={'placeholder': 'Ej: Botella de agua'}),
         }
