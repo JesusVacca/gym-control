@@ -27,6 +27,7 @@ class IncomeListView(ListView):
         queryset = Income.objects.filter(created_at__range=[start_date, end_date])
         totals = queryset.aggregate(
             gym=Sum('amount', filter=Q(category=Income.IncomeCategory.GYM)),
+            surplus=Sum('amount', filter=Q(category=Income.IncomeCategory.SURPLUS)),
             refrigerator=Sum('amount', filter=Q(category=Income.IncomeCategory.REFRIGERATOR)),
             coffee=Sum('amount', filter=Q(category=Income.IncomeCategory.COFFEE)),
             herbalife=Sum('amount', filter=Q(category=Income.IncomeCategory.HERBALIFE)),
@@ -36,6 +37,7 @@ class IncomeListView(ListView):
             total=Sum('amount')
         )
         context['gym_income'] = totals['gym'] or 0
+        context['surplus'] = totals['surplus'] or 0
         context['refrigerator_income'] = totals['refrigerator'] or 0
         context['coffee_income'] = totals['coffee'] or 0
         context['herbalife_income'] = totals['herbalife'] or 0

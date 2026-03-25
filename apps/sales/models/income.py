@@ -12,6 +12,7 @@ class Income(models.Model):
         COFFEE = 'CAFÉ', 'CAFÉ'
         HERBALIFE = 'HERBALIFE','HERBALIFE'
         PROTEIN = 'PROTEINA', 'PROTEINA'
+        SURPLUS = 'SOBRANTE','SOBRANTE'
 
     class IncomeMethod(models.TextChoices):
         CASH = 'Efectivo', 'Efectivo'
