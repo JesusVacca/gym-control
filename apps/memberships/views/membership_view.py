@@ -35,7 +35,8 @@ class MembershipListView(ListView):
             queryset = queryset.filter(
                 Q(member__email__contains=search)|
                 Q(member__first_name__contains=search)|
-                Q(member__last_name__contains=search)
+                Q(member__last_name__contains=search)|
+                Q(member__phone_number=search)
             )
         return queryset
 

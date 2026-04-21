@@ -12,6 +12,9 @@ class Attendance(models.Model):
     def __str__(self):
         return f'{self.client.first_name} - {self.check_in} '
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('-check_in',)
         verbose_name = 'Gestión de asistencia'

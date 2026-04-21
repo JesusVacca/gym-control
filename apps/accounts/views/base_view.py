@@ -15,9 +15,9 @@ class BaseSearchView(ListView):
         search = self.request.GET.get('search')
         if search:
             queryset = queryset.filter(
-                Q(first_name__contains=search) |
-                Q(phone_number__contains=search) |
-                Q(email__contains=search)
+                Q(first_name__contains=search.strip()) |
+                Q(phone_number__contains=search.strip()) |
+                Q(email__contains=search.strip())
             )
         return queryset
 

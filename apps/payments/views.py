@@ -1,8 +1,9 @@
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import Q
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView
 
 from apps.accounts.models import Member
@@ -25,15 +26,16 @@ class PaymentListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['selected_payment_type'] = self.request.GET.get('payment_type','')
+        context['selected_payment_type'] = self.request.GET.get('selected_payment_type','')
         context['search'] = self.request.GET.get('search','')
         context['payment_type'] = Payment.PaymentMethod.choices
         return context
 
     def get_queryset(self):
         queryset = Payment.objects.all().order_by('-payment_date')
-        selected_payment_type = self.request.GET.get('payment_type','')
+        selected_payment_type = self.request.GET.get('selected_payment_type')
         search = self.request.GET.get('search','')
+        print(selected_payment_type)
         if search:
             queryset = queryset.filter(
                 Q(membership__member__first_name__contains=search) |
@@ -44,7 +46,7 @@ class PaymentListView(ListView):
 
             )
         if selected_payment_type:
-            queryset = queryset.filter(payment_type=selected_payment_type)
+            queryset = queryset.filter(payment_method=selected_payment_type)
         return queryset
 
 
@@ -76,15 +78,18 @@ class PaymentCreateView(CreateView):
             return super().form_invalid(form)
         with transaction.atomic():
             self.object = form.save()
-            Income.objects.create(
-                amount=self.object.amount,
-                payment_method = self.object.payment_method,
-                category=Income.IncomeCategory.GYM,
-                description=self.object.payment_type,
-                payment=self.object,
-                cash_opening=cash_opening,
-                source=Income.Source.PAYMENT
-            )
+            try:
+                Income.objects.create(
+                    payment=self.object,
+                    amount=self.object.amount,
+                    payment_method=self.object.payment_method,
+                    category=Income.IncomeCategory.GYM,
+                    description=self.object.payment_type,
+                    cash_opening=cash_opening,
+                    source=Income.Source.PAYMENT
+                )
+            except IntegrityError:
+                pass
             Notify.notify(
                 request=self.request,
                 message='Pago registrado correctamente',
@@ -114,7 +119,19 @@ class PaymentUpdateView(UpdateView):
             income.amount = self.object.amount
             income.payment_method = self.object.payment_method
             income.description = self.object.payment_type
-            income.Source = Income.Source.PAYMENT
+            income.source = Income.Source.PAYMENT
             income.save()
         return response
 
+@method_decorator(role_required([Member.BaseRoles.ADMINISTRATOR, Member.BaseRoles.SECRETARY]),name='dispatch')
+class PaymentDeleteView(View):
+    def post(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        if payment.payments:
+            payment.payments.delete()
+        payment.delete()
+        Notify.notify(
+            request=request,
+            message='Pago eliminado correctamente',
+        )
+        return redirect('payments:payments')

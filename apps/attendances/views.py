@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
@@ -29,8 +30,7 @@ class AttendanceListView(ListView):
         start_date = self.request.GET.get('start_date')
         end_date = self.request.GET.get('end_date')
         if not start_date and not end_date:
-            start, end = get_today_range()
-            queryset = queryset.filter(check_in__range=[start, end])
+            queryset = queryset.filter(check_in=timezone.localdate())
         if start_date:
             queryset = queryset.filter(check_in__gte=start_date)
         if end_date:

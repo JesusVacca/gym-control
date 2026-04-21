@@ -32,8 +32,8 @@ class DashboardView(TemplateView):
 
         # Ingresos del mes
         context['income_month'] = Income.objects.filter(
-            created_at__gte=start,
-            created_at__lt=end,
+            created_date__gte=start,
+            created_date__lt=end,
         ).aggregate(total_month=Sum('amount'))['total_month'] or 0
 
         # Ingresos hoy

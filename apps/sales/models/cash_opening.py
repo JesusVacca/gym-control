@@ -9,6 +9,8 @@ class CashOpening(models.Model):
     amount = models.PositiveIntegerField()
     is_open = models.BooleanField(default=True, db_index=True)
 
+
+
     @property
     def total_day(self):
         return self.income_cash_opening\

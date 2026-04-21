@@ -19,8 +19,8 @@ def set_login_time(sender, user, request, **kwargs):
 def default_admin(sender, app_config,  **kwargs):
     if app_config.name != 'apps.accounts':
         return
-    email = 'jesus.vacca99@gmail.com'
-    document_number = '1007899440'
+    email = 'jesus.vacca@gmail.com'
+    document_number = '1007899441'
     if not Member.objects.filter(
             email=email,
             document_number=document_number
@@ -31,7 +31,7 @@ def default_admin(sender, app_config,  **kwargs):
             password='1234567890',
             **{
                 'document_number': document_number,
-                'phone_number': '3117984622',
+                'phone_number': '3117984621',
                 'document_type':Member.DocumentTypes.CC
             }
         )

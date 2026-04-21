@@ -50,7 +50,7 @@ class ReportsListView(ListView):
         if start_date and end_date:
             start = datetime.combine(parse_date(start_date), time.min)
             end = datetime.combine(parse_date(end_date), time.max)
-            queryset = queryset.filter(created_at__range=[start, end])
+            queryset = queryset.filter(created_date__range=[start, end])
         if selected_type:
             queryset = queryset.filter(category=selected_type)
         if selected_payment_method:
@@ -61,7 +61,7 @@ class ReportsListView(ListView):
     def get_filtered_queryset(self):
         queryset = self.get_base_queryset()
         return queryset.annotate(
-            day=Cast('created_at', output_field=DateField()),
+            day=Cast('created_date', output_field=DateField()),
         ).values('day').annotate(
             total=Sum('amount'),
             count=Count('id')

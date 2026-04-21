@@ -20,7 +20,7 @@
             </div>
             <div class="form__group">
                 <label class="form__label" for="id_payment_type">Tipo de pago</label>
-                <select class="form__input" name="payment_type" id="id_payment_type">
+                <select class="form__input" name="selected_payment_type" id="id_payment_type">
                     <option  value="" selected>Seleccione un tipo</option>
                     {% for type in payment_type %}
                         <option value="{{ type.0 }}" {% if selected_payment_type == type.0 %}selected{% endif %}>{{ type.1 }}</option>
@@ -77,6 +77,12 @@
                                 >
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+                                <form action="{% url 'payments:payment-delete' pk=payment.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button title="Eliminar pago" class="button button--danger" type="submit">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% endfor %}
